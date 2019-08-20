@@ -1,0 +1,6 @@
+map_width: 640
+map_height: 480
+window_size: 10
+map_dilation: 5
+min_thresh: 220
+max_thresh: 255

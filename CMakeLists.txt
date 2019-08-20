@@ -4,23 +4,37 @@ project ( path_planning )
 set ( CMAKE_BUILD_TYPE Release )
 set ( CMAKE_CXX_STANDARD 11 )
 set ( CMAKE_CXX_STANDARD_REQUIRED ON )
-# Find Boost
-find_package ( Boost COMPONENTS program_options filesystem REQUIRED )
 
-# Find OpenCV
-find_package( OpenCV REQUIRED )
+find_package( yaml-cpp REQUIRED )
 
-include_directories ( ${Boost_INCLUDE_DIRS} )
-include_directories ( include )
+find_package( OpenCV   REQUIRED )
 
-add_library( world src/world_generator.cpp )
-add_library( path src/path_generator.cpp )
-add_library( heuristic src/heuristic_generator.cpp )
+include_directories ( 
+	inc 
+	${YAMLCPP_INCLUDE_DIRS}
+	${OpenCV_INCLUDE_DIRS}
+)
 
-add_executable ( testastar src/main.cpp )
-add_executable ( astar src/main2.cpp )
+set( PATH_PLANNING_HDRS 
+	${CMAKE_CURRENT_SOURCE_DIR}/inc/planner.h
+	${CMAKE_CURRENT_SOURCE_DIR}/inc/path_generator.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/inc/map_generator.h
+)
 
-target_include_directories ( astar PRIVATE ${include} )
+set( PATH_PLANNING_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/path_generator.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/map_generator.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/heuristic.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/search.cpp
+)
 
-target_link_libraries ( testastar ${Boost_LIBRARIES} ${OpenCV_LIBS} )
-target_link_libraries ( astar  world path heuristic ${Boost_LIBRARIES} ${OpenCV_LIBS} )
+add_library( ${PROJECT_NAME} SHARED ${PATH_PLANNING_SRCS} ${PATH_PLANNING_HDRS} )
+
+add_executable ( planner test/test_${PROJECT_NAME}.cpp )
+
+target_link_libraries( planner
+    ${PROJECT_NAME} 
+	${OpenCV_LIBS}
+	${YAMLCPP_LIBRARIES}
+)
+
