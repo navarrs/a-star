@@ -19,7 +19,9 @@
 #define VWHITE cv::Vec3b(255, 255, 255)
 
 // Common parameters
-#define FREE_BLOCK  225
+#define FREE_CELL 225
+#define FREE      0
+#define BLOCKED   1
 
 namespace planner {
 
@@ -51,7 +53,7 @@ namespace planner {
 		// Row, column
 		int r, c;
 		// Overloading operators 
-		bool operator ==( const Coord &co ) { 
+		bool operator ==( const Coord &co ) const { 
 			return r == co.r && c == co.c; 
 		}
 		Coord operator +( const Coord &co ) { 
@@ -175,16 +177,34 @@ namespace planner {
 			     * @brief:  Checks if a Coordinate is withing the world's range.
 			     * @param:  ( co  ): Coordinate to evaluate.
 			     *          ( map_param ): Map parameters. 
-			     * @return: False if the Coordinate is not within the world's
+			     * @return: False if the coordinate is not within the world's
 			     *          range. Otherwise, true.
 			     * ---------------------------------------------------------- */
 				static bool is_coord_valid( const Coord &co, 
 					                        const MapParameters &map_param );
 
+				/* ----------------------------------------------------------- *
+			     * @name:   is_coord_destination()
+			     * @brief:  Checks if a coordinate is the same as the destination 
+			     * @param:  ( co  ): Coordinate to evaluate.
+			     *          ( dst ): Destination coordinate. 
+			     * @return: True if the coordinate is the same as the destination
+			     *          Otherwise, false.
+			     * ---------------------------------------------------------- */
+				static bool is_coord_destination( const Coord &co, 
+					                              const Coord &dst );
 
-				// bool is_Coord_destination( Coord s, Coord d );
-				// bool is_Coord_blocked( const std::vector<std::vector<int> > &graph, 
-				// 	                   Coord co );
+
+				/* ----------------------------------------------------------- *
+			     * @name:   is_coord_blocked()
+			     * @brief:  Checks if a coordinate is blocked. 
+			     * @param:  ( co   ): Coordinate to evaluate.
+			     *          ( grid ): Binary grid that represents the world.
+			     * @return: True if the coordinate is blocked. Otherwise, false.
+			     * ---------------------------------------------------------- */
+				static bool is_coord_blocked( const Coord &co, 
+					                   const std::vector<std::vector<int>> &grid );
+
 		};
 	} // End of namespace search_algorihthm
 }

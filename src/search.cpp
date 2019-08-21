@@ -4,95 +4,57 @@ namespace planner {
 
 	namespace search_algorithm {
 
-	// /* 	@method: is_Coord_valid(...)
-	// 	@brief: checks if Coord is out of the world's range. 
-	// 	@param: Coord
-	// 	@returns: 
-	// 		true if the Coord is within the world's bounds, 
-	// 		false otherwise */
-	// bool PathGenerator::is_Coord_valid(Coord co) {
-	// 	return co.r >= 0 && co.r < GRID_WIDTH && co.c >= 0 && co.c < GRID_HEIGHT;
-	// }
+		bool Function::astar( std::vector<std::vector<int>> &grid, 
+							  const planner::MapParameters &map_param,
+						      const planner::Coord &src, 
+						      const planner::Coord &dst ) {
 
-	// /* 	@method: is_Coord_blocked(...)
-	// 	@brief: checks if Coord is an obstacle 
-	// 	@param:
-	// 		grid (const vector<vector<int> >) map
-	// 		x (int) the x Coordinate of the Coord.
-	// 		y (int) the y Coordinate of the Coord.
-	// 	@returns: 
-	// 		true if the Coord is blocked, 
-	// 		false otherwise */
-	// bool PathGenerator::is_Coord_blocked(const std::vector<std::vector<int> >&grid, Coord co) {
-	// 	return grid[co.r][co.c];
-	// }
+			// Assert that neither source nor destination are out of range.
+			if ( !is_coord_valid( src, map_param ) ) {
+				std::cout << "[ERROR] Source is invalid" << std::endl;
+				return EXIT_FAILURE;
+			}
 
-	// /* 	@method: is_Coord_destination(...)
-	// 	@brief: checks if Coord is destination
-	// 	@param:
-	// 		r (int) - r Coordinate to compare
-	// 		c (int) - c Coordinate to compare
-	// 		d (Coord) - destinatino 
-	// 	@returns: 
-	// 		true if the Coord is blocked, 
-	// 		false otherwise */
-	// bool PathGenerator::is_Coord_destination(Coord s, Coord d) {
-	// 	return s == d;
-	// }
+			if ( !is_coord_valid( dst, map_param ) ) {
+				std::cout << "[ERROR] Destination is invalid" << std::endl;
+				return EXIT_FAILURE;
+			}
 
-	// /* @method: compute_path(...)
-	//    @brief: Produces final path. */
-	// void PathGenerator::compute_path(std::vector<std::vector<node> > &nodes, std::stack<Coord> &path) {
-	// 	path = std::stack<Coord>();
-	// 	Coord temp = dst;
-	// 	while(!(nodes[temp.r][temp.c].parent == temp)) {
-	// 		path.push(temp);
-	// 		temp = nodes[temp.r][temp.c].parent;
-	// 	}
-	// 	path.push(temp);
-	// }
+			// Assert that neither source nor destination are blocked.
+			if ( !is_coord_blocked( src, grid ) ) {
+				std::cout << "[ERROR] Source is blocked" << std::endl;
+				return EXIT_FAILURE;
+			}
+			if ( !is_coord_blocked( dst, grid ) ) {
+				std::cout << "[ERROR] Destination is blocked" << std::endl;
+				return EXIT_FAILURE;
+			}
 
-	bool Function::astar( std::vector<std::vector<int>> &grid, 
-						  const planner::MapParameters &map_param,
-					      const planner::Coord &src, 
-					      const planner::Coord &dst ) {
+			// Assert that source is not destination.
+			if ( !is_coord_destination( src, dst ) ) {
+				std::cout << "[WARN] Already at destination" << std::endl;
+				return EXIT_SUCCESS;
+			}
 
-		// Assert that neither source nor destination are out of range.
-		if ( !is_coord_valid( src, map_param ) ) {
-			std::cout << "[ERROR] Source is invalid" << std::endl;
-			return EXIT_FAILURE;
+			return EXIT_SUCCESS;
 		}
 
-		return EXIT_SUCCESS;
-	}
+		bool Function::is_coord_valid( const planner::Coord &co, 
+			                           const planner::MapParameters &map_param ) {
+			return ( co.r >= 0 && co.r < map_param.width_ && 
+				     co.c >= 0 && co.c < map_param.height_ );
+		}
 
-	bool Function::is_coord_valid( const planner::Coord &co, 
-		                           const planner::MapParameters &map_param ) {
-		return ( co.r >= 0 && co.r < map_param.width_ && 
-			     co.c >= 0 && co.c < map_param.height_ );
-	}
+		bool Function::is_coord_destination( const planner::Coord &co, 
+											 const planner::Coord &dst ) {
+			return co == dst;
+		}
 
-	// 	// Assert that neither source nor destination are out of range
-	// 	if (!is_Coord_valid(src)) {
-	// 		std::cout << "Source is invalid." << std::endl;
-	// 		return;
-	// 	}
-	// 	if (!is_Coord_valid(dst)) {
-	// 		std::cout << "Destination is invalid." << std::endl;
-	// 		return;
-	// 	}
+		bool Function::is_coord_blocked( const planner::Coord &co,
+										 const std::vector<std::vector<int>> &grid ) {
+			return grid[ co.r ][ co.c ] == FREE;
+		}
 
-	// 	// Assert that neither source or destination are blocked
-	// 	if (is_Coord_blocked(grid, src) || is_Coord_blocked(grid, dst)) {
-	// 		std::cout << "Either source or destination are blocked." << std::endl;
-	// 		return;
-	// 	}
-
-	// 	// Assert that source is not destination 
-	// 	if (is_Coord_destination(src, dst)) {
-	// 		std::cout << "Already at destination." << std::endl;
-	// 		return;
-	// 	}
 
 	// 	// Initialize the closed list
 	// 	bool closed_list[GRID_HEIGHT][GRID_WIDTH];
@@ -165,6 +127,16 @@ namespace planner {
 	// 		return;
 	// 	}
 //	}
-
+// /* @method: compute_path(...)
+	//    @brief: Produces final path. */
+	// void PathGenerator::compute_path(std::vector<std::vector<node> > &nodes, std::stack<Coord> &path) {
+	// 	path = std::stack<Coord>();
+	// 	Coord temp = dst;
+	// 	while(!(nodes[temp.r][temp.c].parent == temp)) {
+	// 		path.push(temp);
+	// 		temp = nodes[temp.r][temp.c].parent;
+	// 	}
+	// 	path.push(temp);
+	// }
 	} // End of namespace search algorithm
 } // End of namespace planner 

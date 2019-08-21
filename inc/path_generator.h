@@ -105,9 +105,6 @@ namespace planner {
 
 			search_algorithm::TYPE algorithm_;
 
-			// bool is_Coord_valid(Coord co);
-			// bool is_Coord_destination(Coord s, Coord d);
-			// bool is_Coord_blocked(const std::vector<std::vector<int> > &graph, Coord co);
 			// void compute_path(std::vector<std::vector<node> > &nodes, std::stack<Coord> &path);
 	};
 } // End of namespace planner

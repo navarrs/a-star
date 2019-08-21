@@ -165,7 +165,7 @@ namespace planner {
 					std::cout << "[ERROR] invalid values on map" << std::endl;
 					return EXIT_FAILURE;
 				}
-				bin_map_[y / map_.window_size_][x / map_.window_size_ ] = (avg < FREE_BLOCK ? 0 : 1);
+				bin_map_[y / map_.window_size_][x / map_.window_size_ ] = (avg < FREE_CELL ? FREE : BLOCKED);
 			}
 		}
 		return EXIT_SUCCESS;
