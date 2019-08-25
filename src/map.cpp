@@ -288,19 +288,26 @@ namespace planner
 		}
 	}
 
-	// void Map::trace(std::stack<Coord> path) {
-	// 	// Coord prev = {INT_MAX, INT_MAX};
-	// 	// while(!path.empty()) {
-	// 	// 	Coord p = path.top();
-	// 	// 	if (!(prev.c == INT_MAX)) {
-	// 	// 		//C++: void circle(Mat& img, Point center, int radius, const Scalar& color, int thickness=1, int lineType=8, int shift=0)
-	// 	// 		cv::circle(input_map, cv::Point(p.c * IM_WINDOW, p.r * IM_WINDOW), RADIUS, SRED, POINT_THICK);
-	// 	// 	}
-	// 	// 	path.pop();
-	// 	// 	std::cout << "->("<< p.r <<","<<p.c <<")";
-	// 	// 	bin_map_[p.r][p.c] = 7;
-	// 	// 	prev = p;
-	// 	// }
-	// 	// std::cout << std::endl;
-	// }
-}
+	void Map::trace_path( const std::vector<planner::Coord>& path) 
+	{
+		planner::Coord prev = { INT_MAX, INT_MAX };
+
+		for( auto& coord: path )
+		{
+			planner::Coord p = coord;
+
+			if ( !(prev.c == INT_MAX) ) 
+			{
+				//C++: void circle(Mat& img, Point center, int radius, const Scalar& color, int thickness=1, int lineType=8, int shift=0)
+				cv::circle( input_map_, 
+					          cv::Point( p.c * map_params_.window_size_, 
+					          	         p.r * map_params_.window_size_ ),
+					          2, SRED, 1);
+			}
+			std::cout << "->("<< p.r <<","<<p.c <<")";
+			bin_map_[ p.r ][ p.c ] = 7;
+			prev = p;
+		}
+		std::cout << std::endl;
+	}
+} // End of namespace planner

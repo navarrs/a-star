@@ -73,34 +73,28 @@ int main( int argc, char* argv[] ) {
 	}
 
 	std::cout << "[INFO] Setting source and destination" << std::endl;
-	path_finder.set_source( { 2, 2 } );
-	path_finder.set_destination( { 2,  2 } );
+	path_finder.set_source( { 2, 4 } );
+	path_finder.set_destination( { 24,  32 } );
 	std::cout << "[INFO] Displaying planner configuration " << std::endl;
 	path_finder.print();
 	std::cout << "[DONE]" << std::endl;
 
-
+	//-------------------------- Planning
 	std::cout << "[INFO] Finding path" << std::endl;
 	std::vector<std::vector<int>> binmap = map.get();
-	path_finder.find_path( binmap,
-												 map.get_configuration(),
-												 planner::heuristic::TYPE::EUCLIDEAN );
+	if( !path_finder.find_path( binmap, map.get_configuration(),
+												      planner::heuristic::TYPE::EUCLIDEAN ) )  
+	{
+		std::cout << "[ERROR] Planner could not find path" << std::endl;
+		return EXIT_FAILURE;
+	}
+	std::vector<planner::Coord> path = path_finder.get_path();
 
-	// std::stack<planner::Coord> path
-	// astar.a_star_search(map.get_world(), path);
+	std::cout << "[INFO] Tracing path" << std::endl;
+	map.trace_path( path );
+	map.display();
 
-	// if (path.empty()) 
-	// 	cout << "No path was found" << endl;
-	// else {
-	// 	map.trace_path(path);
-	// 	map.print_world();
-	// 	Mat final_map = map.get_input_map();
-	// 	namedWindow("Final Map");
-	// 	moveWindow("Final Map", 300, 350);
-	// 	imshow("Final Map", final_map);
-	// 	waitKey(0); //press q
-	// }
-	// cout << "[DONE] " << endl;
+	std::cout << "[DONE] " << std::endl;
 
 	return EXIT_SUCCESS;
 }

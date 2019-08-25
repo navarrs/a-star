@@ -109,12 +109,15 @@ namespace planner
 			void display();
 
 			/* -------------------------------------------------------------------- *
-			 * @name:   trace_path( std::stack<Coord> )
-			 * @brief:  Takes path computed by astar and traces it on the world map.
-			 * @param:  ( std::stack<Coord> ) waypoints obtained from path finding.
-			 * @return: void
+			 * @name:   trace_path
+			 * @brief:  Takes the path computed by the planner and traces it on the 
+			 *          input map and on the binary map.
+			 *
+			 * @param:  path: Vector of coordinates that represent the path. 
+			 *
+			 * @return: 
 			 * -------------------------------------------------------------------- */
-			// void trace(std::stack<Coord> path_);
+			void trace_path( const std::vector<planner::Coord>& path );
 			
 		private:
 			/* -------------------------------------------------------------------- *
