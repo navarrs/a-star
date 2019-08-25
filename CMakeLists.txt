@@ -17,13 +17,13 @@ include_directories (
 
 set( PATH_PLANNING_HDRS 
 	${CMAKE_CURRENT_SOURCE_DIR}/inc/planner.h
-	${CMAKE_CURRENT_SOURCE_DIR}/inc/path_generator.h	
-	${CMAKE_CURRENT_SOURCE_DIR}/inc/map_generator.h
+	${CMAKE_CURRENT_SOURCE_DIR}/inc/path_finder.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/inc/map.h
 )
 
 set( PATH_PLANNING_SRCS
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/path_generator.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/map_generator.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/path_finder.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/map.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/heuristic.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/search.cpp
 )
@@ -33,7 +33,7 @@ add_library( ${PROJECT_NAME} SHARED ${PATH_PLANNING_SRCS} ${PATH_PLANNING_HDRS} 
 add_executable ( planner test/test_${PROJECT_NAME}.cpp )
 
 target_link_libraries( planner
-    ${PROJECT_NAME} 
+  ${PROJECT_NAME} 
 	${OpenCV_LIBS}
 	${YAMLCPP_LIBRARIES}
 )

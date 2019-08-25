@@ -4,8 +4,8 @@
 #include <unistd.h>
 
 #include "planner.h"
-#include "path_generator.h"
-#include "map_generator.h"
+#include "path_finder.h"
+#include "map.h"
 
 
 /*	@method: mouse_calback(...)
@@ -53,7 +53,7 @@ int main( int argc, char* argv[] ) {
 	std::cout <<  "[START] Creating world..." << std::endl;
 	cv::Mat input_map = cv::imread( map_path );
 	planner::Map map( map_config_file, input_map );
-	if ( EXIT_FAILURE == map.create() ) {
+	if ( !map.create_obstacle_map() ) {
 		std::cout << "[ERROR] Could not create map" << std::endl;
 		return EXIT_FAILURE;
 	}
@@ -63,31 +63,29 @@ int main( int argc, char* argv[] ) {
 
 	//-------------------------- Creating planner
 	std::cout << "[START] Creating planner..." << std::endl;
-	planner::PathGenerator path_generator;
-
-	std::cout << "[INFO] Setting Heuristic Function" << std::endl;
-	if ( EXIT_FAILURE == path_generator.set_heuristic( 
-		                 planner::heuristic::TYPE::EUCLIDEAN ) ) {
-		std::cout << "[ERROR] Could not set heuristic function " << std::endl;
-		return EXIT_FAILURE;
-	}
+	planner::PathFinder path_finder;
 
 	std::cout << "[INFO] Setting Search Algorithm " << std::endl;
-	if ( EXIT_FAILURE == path_generator.set_search_algorithm( 
+	if ( !path_finder.set_search_algorithm( 
 		                 planner::search_algorithm::TYPE::ASTAR ) ) {
 		std::cout << "[ERROR] Could not set search algorithm" << std::endl;
 		return EXIT_FAILURE;
 	}
 
 	std::cout << "[INFO] Setting source and destination" << std::endl;
-	path_generator.set_source( { 40, 44 } );
-	path_generator.set_destination( { 4,  20 } );
+	path_finder.set_source( { 2, 2 } );
+	path_finder.set_destination( { 2,  2 } );
 	std::cout << "[INFO] Displaying planner configuration " << std::endl;
-	path_generator.print();
+	path_finder.print();
 	std::cout << "[DONE]" << std::endl;
 
 
-	std::cout << "[INFO] Finding path using AStar algorithm..." << std::endl;
+	std::cout << "[INFO] Finding path" << std::endl;
+	std::vector<std::vector<int>> binmap = map.get();
+	path_finder.find_path( binmap,
+												 map.get_configuration(),
+												 planner::heuristic::TYPE::EUCLIDEAN );
+
 	// std::stack<planner::Coord> path
 	// astar.a_star_search(map.get_world(), path);
 

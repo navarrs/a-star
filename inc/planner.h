@@ -70,8 +70,6 @@ namespace planner {
 		unsigned int h;
 	};
 
-	using node_list = std::set<Node*>;
-
 	// Heuristic 
 	namespace heuristic {
 
@@ -155,6 +153,9 @@ namespace planner {
 		// Methods for search algorithms.
 		class Function {
 			public:
+
+				Function();
+				~Function();
 				/* ----------------------------------------------------------- *
 			     * @name:   astar()
 			     * @brief:  Astar-based search.
@@ -162,15 +163,32 @@ namespace planner {
 			     *          ( map_param  ): Map parameters.
 			     *          ( src ): Coordinate representing the start point.
 			     *          ( dst ): Coordinate representing the destination.
+			     *          ( heuristic ): Heuristic to use for planning.
+			     *				  ( path ): Path computed from source to destination. 
 			     * @return: False if: 
 			     *            1) Either source or destination are invalid.
 			     *            2) Either source or destination are blocked. 
 			     *          Otherwise, true. 
 			     * ---------------------------------------------------------- */
 				static bool astar( std::vector<std::vector<int>> &grid,
-								   const MapParameters &map_param,
-				                   const Coord &src, const Coord &dst  );
+								           const planner::MapParameters &map_param,
+				                   const planner::Coord &src, 
+				                   const planner::Coord &dst,
+				                   const planner::heuristic::TYPE &heuristic,
+				                   std::vector<planner::Coord> &path );
 			private:
+
+				/* --------------------------------------------------------------- *
+				 * @name:   set_heuristic( ... )
+				 * @brief:  Sets type of heuristic to use to perform path finding. 
+				 *          Current supported heuristics:
+				 *           	1) Euclidean distance. 
+				 *              2) Manhattan distance. 
+				 *              3) Octagonal distance. 
+				 * @param:  ( h ): Represents the type of heuristic function. 
+				 * @return: False if heuristic function is invalid, otherwise true.
+			   * -------------------------------------------------------------- */
+				bool set_heuristic( const heuristic::TYPE &h );
 
 				/* ----------------------------------------------------------- *
 			     * @name:   is_Coord_valid()
@@ -180,8 +198,8 @@ namespace planner {
 			     * @return: False if the coordinate is not within the world's
 			     *          range. Otherwise, true.
 			     * ---------------------------------------------------------- */
-				static bool is_coord_valid( const Coord &co, 
-					                        const MapParameters &map_param );
+				static bool is_coord_valid( const planner::Coord &co, 
+					                          const planner::MapParameters &map_param );
 
 				/* ----------------------------------------------------------- *
 			     * @name:   is_coord_destination()
@@ -191,8 +209,8 @@ namespace planner {
 			     * @return: True if the coordinate is the same as the destination
 			     *          Otherwise, false.
 			     * ---------------------------------------------------------- */
-				static bool is_coord_destination( const Coord &co, 
-					                              const Coord &dst );
+				static bool is_coord_destination( const planner::Coord &co, 
+					                                const planner::Coord &dst );
 
 
 				/* ----------------------------------------------------------- *
@@ -202,8 +220,16 @@ namespace planner {
 			     *          ( grid ): Binary grid that represents the world.
 			     * @return: True if the coordinate is blocked. Otherwise, false.
 			     * ---------------------------------------------------------- */
-				static bool is_coord_blocked( const Coord &co, 
+				static bool is_coord_blocked( const planner::Coord &co, 
 					                   const std::vector<std::vector<int>> &grid );
+
+				// Vector of movement directions. 
+				std::vector<planner::Coord> directions_;
+				int num_directions_;
+
+				// Heuristic function 
+				std::function<unsigned int( planner::Coord, 
+					                          planner::Coord )> heuristic_func_;
 
 		};
 	} // End of namespace search_algorihthm

@@ -1,5 +1,5 @@
 /**
- * @file:   path_generator.h
+ * @file:   path_finder.h
  * @author: Ingrid Navarro
  * @brief:  This file contains the definitions for the class PathGenerator. This 
  *          class used for path finding using the Astar algorithm. 
@@ -12,7 +12,7 @@
 
 namespace planner {
 
-	class PathGenerator {
+	class PathFinder {
 		public:
 			/* --------------------------------------------------------------- *
 			 * @name:   PathGenerator()
@@ -21,26 +21,14 @@ namespace planner {
 			 * @return: Creates an instance of a path generator with default 
 			 *          parameters. 
 		     * -------------------------------------------------------------- */
-			PathGenerator();
+			PathFinder();
 
 			/* --------------------------------------------------------------- *
 			 * @name:   ~PathGenerator()
 			 * @brief:  Destructor for the class PathGenerator.
 			 * @param:  None.
 		     * -------------------------------------------------------------- */
-			~PathGenerator();
-
-			/* --------------------------------------------------------------- *
-			 * @name:   set_heuristic( ... )
-			 * @brief:  Sets type of heuristic to use to perform path finding. 
-			 *          Current supported heuristics:
-			 *           	1) Euclidean distance. 
-			 *              2) Manhattan distance. 
-			 *              3) Octagonal distance. 
-			 * @param:  ( h ): Represents the type of heuristic function. 
-			 * @return: False if heuristic function is invalid, otherwise true.
-		     * -------------------------------------------------------------- */
-			bool set_heuristic( const heuristic::TYPE &h );
+			~PathFinder();
 
 			/* --------------------------------------------------------------- *
 			 * @name:   set_search_algorithm( ... )
@@ -50,14 +38,14 @@ namespace planner {
 			 * @param:  ( s ): Represents the type of search algorithm. 
 			 * @return: False if search algorithm is invalid, otherwise true.
 		     * -------------------------------------------------------------- */
-			bool set_search_algorithm( const search_algorithm::TYPE &s );
+			bool set_search_algorithm( const planner::search_algorithm::TYPE &s );
 
 			/* --------------------------------------------------------------- *
 			 * @name:   set_source( ... )
 			 * @brief:  Sets starting Coordinate. 
 			 * @param:  ( source ): Starting Coordinate. 
 		     * -------------------------------------------------------------- */
-			void set_source( const Coord &source );
+			void set_source( const planner::Coord &source );
 
 			/* --------------------------------------------------------------- *
 			 * @name:   get_source( ... )
@@ -71,7 +59,7 @@ namespace planner {
 			 * @brief:  Sets destination Coordinate. 
 			 * @param:  ( destination ): Destination Coordinate. 
 		     * -------------------------------------------------------------- */
-			void set_destination( const Coord &destination );
+			void set_destination( const planner::Coord &destination );
 
 			/* --------------------------------------------------------------- *
 			 * @name:   get_destination( ... )
@@ -83,25 +71,36 @@ namespace planner {
 			/* --------------------------------------------------------------- *
 			 * @name:   print( ... )
 			 * @brief:  Prints planner configuration
-		     * -------------------------------------------------------------- */
+		   * -------------------------------------------------------------- */
 			void print();
 
+			/* --------------------------------------------------------------- *
+			 * @name:   find_path( ... )
+			 * @brief:  Calls search algorithm method to find path. 
+			 * @param:  ( grid ): Represents the binary map.
+			 *          ( map_params ): Map configuration.
+			 *				  ( heuristic ): Heuristic method to use for planning.
+			 * @returns: False if path is empty, true otherwise. 
+		   * -------------------------------------------------------------- */
+			bool find_path( std::vector<std::vector<int>>& grid,
+											const planner::MapParameters& map_params, 
+											const planner::heuristic::TYPE& heuristic );
+
 		private:
-			// Vector of movement directions. 
-			std::vector<Coord> directions_;
-			int num_directions_;
-
+	
 			// Source and destination Coordinates. 
-			Coord source_;
-			Coord destination_;
+			planner::Coord source_;
+			planner::Coord destination_;
 
-			// Heuristic function-related
-			std::function<unsigned int( Coord, Coord )> heuristic_func_;
-			heuristic::TYPE heuristic_;
+			// Path 
+			std::vector<planner::Coord> path_;
 
 			std::function<bool( std::vector<std::vector<int> >&,
-							    const MapParameters&, 
-							    const Coord&, const Coord& )> search_algorithm_;		
+											    const planner::MapParameters&, 
+											    const planner::Coord&, 
+											    const planner::Coord&,
+											    const planner::heuristic::TYPE&,
+											    std::vector<planner::Coord>& )> search_algorithm_;	
 
 			search_algorithm::TYPE algorithm_;
 
