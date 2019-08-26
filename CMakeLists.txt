@@ -5,7 +5,7 @@ set ( CMAKE_BUILD_TYPE Release )
 set ( CMAKE_CXX_STANDARD 11 )
 set ( CMAKE_CXX_STANDARD_REQUIRED ON )
 
-find_package( yaml-cpp REQUIRED )
+find_package( Yaml-cpp REQUIRED )
 
 find_package( OpenCV   REQUIRED )
 

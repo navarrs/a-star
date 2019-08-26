@@ -8,19 +8,13 @@
 #include <stack> 
 #include <iostream>
 
-// Colors
-#define SBLACK cv::Scalar(0,    0,   0)
-#define SRED   cv::Scalar(0,    0, 255)
-#define VBLUE  cv::Vec3b(255,   0,   0)
-#define VWHITE cv::Vec3b(255, 255, 255)
-
-// Common parameters
-#define FREE_CELL 225
-#define FREE      0
-#define BLOCKED   1
-
 namespace planner 
 {
+	const unsigned int FREE_CELL = 225;
+	const unsigned int FREE      = 0;
+	const unsigned int BLOCKED   = 1;
+
+
 	// Struct that stores map parameters
 	struct MapParameters 
 	{
@@ -110,7 +104,8 @@ namespace planner
 		}
 	}; // End of struct Coord. 
 
-	struct Node {
+	struct Node 
+	{
 		planner::Coord parent;
 		unsigned int h;
 	};
@@ -336,13 +331,13 @@ namespace planner
 											        const std::vector<std::vector<planner::Node>> &nodes, 
 			                        const planner::Coord &destination );
 
-				// Vector of movement directions. 
-				std::vector<planner::Coord> directions_;
-				int num_directions_;
+				// // Vector of movement directions. 
+				// std::vector<planner::Coord> directions_;
+				// int num_directions_;
 
-				// Set heuristic function 
-				std::function<unsigned int( 
-					const planner::Coord&, const planner::Coord& )> heuristic_func_;
+				// // Set heuristic function 
+				// std::function<unsigned int( 
+				// 	const planner::Coord&, const planner::Coord& )> heuristic_func_;
 
 		};
 	} // End of namespace search_algorihthm

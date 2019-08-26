@@ -44,12 +44,12 @@ namespace planner
 			}
 
 			// Assert that neither source nor destination are blocked.
-			if ( !is_coord_blocked( source, bin_map ) ) 
+			if ( is_coord_blocked( source, bin_map ) ) 
 			{
 				std::cout << "[ERROR] Source is blocked" << std::endl;
 				return false;
 			}
-			if ( !is_coord_blocked( destination, bin_map ) ) 
+			if ( is_coord_blocked( destination, bin_map ) ) 
 			{
 				std::cout << "[ERROR] Destination is blocked" << std::endl;
 				return false;
@@ -122,28 +122,27 @@ namespace planner
 
 			// Initialize path with default value.
 			std::vector<std::vector<planner::Node>> nodes;
-			int r = 0, c = 0;
-			for(  ; r < map_param.height_; r++ )
+			int r, c;
+			for( r = 0; r < map_param.height_; r++ )
 			{
 				std::vector<planner::Node> node;
-				for( ; c < map_param.width_; c++ )
+				for( c = 0; c < map_param.width_; c++ )
 				{
 					node.push_back( { { -1, -1 }, INT_MAX } );
 				}
-				c = 0;
 				nodes.push_back( node );
 			}	
 
 			// Initialize the parameters of the starting node.
 			r = source.r;
 			c = source.c;
-			nodes[ r ][ c ].parent = source;
+			nodes[ r ][ c ].h = 0;
+			nodes[ r ][ c ].parent = { r, c };
 			
-			planner::Node *temp_node = new Node( { source, 0 });
+			planner::Node *temp_node = new Node( { source, 0 } );
 			std::set<planner::Node*> open_list;
 			open_list.insert( temp_node );
 			bool found_dst{ false };
-			
 
 			while( !open_list.empty() ) 
 			{
@@ -161,12 +160,12 @@ namespace planner
 				unsigned int  h_temp;
 				for ( unsigned int i = 0; i < num_directions_; i++ ) 
 				{
+
 					planner::Coord move = current_coord + directions_[ i ];
 
 					// Assert that Coordinate is valid
 					if ( is_coord_valid( move, map_param ) ) 
 					{
-						std::cout << "GOT HERE" << std::endl;
 						// If its destination, finish
 						if ( is_coord_destination( move, destination ) ) 
 						{
@@ -203,52 +202,52 @@ namespace planner
 			}
 		}
 
-		// TODO: Make this one work.
-		bool Function::set_heuristic( const heuristic::TYPE& heuristic ) 
-		{
-			switch( heuristic ) 
-			{
-				// Bind euclidean function to the heuristic function and set
-				// the number of directions to 8.
-				case planner::heuristic::TYPE::EUCLIDEAN:	
-					heuristic_func_ = std::bind( planner::heuristic::Function::euclidean, 
-						                   		 		 std::placeholders::_1, 
-						                   		     std::placeholders::_2 ); 
-					num_directions_ = 8;
-					break;
+		// // TODO: Make this one work.
+		// bool Function::set_heuristic( const heuristic::TYPE& heuristic ) 
+		// {
+		// 	switch( heuristic ) 
+		// 	{
+		// 		// Bind euclidean function to the heuristic function and set
+		// 		// the number of directions to 8.
+		// 		case planner::heuristic::TYPE::EUCLIDEAN:	
+		// 			heuristic_func_ = std::bind( planner::heuristic::Function::euclidean, 
+		// 				                   		 		 std::placeholders::_1, 
+		// 				                   		     std::placeholders::_2 ); 
+		// 			num_directions_ = 8;
+		// 			break;
 
-				// Bind manhattan function to the heuristic function and set
-				// the number of directions to 4.
-				case planner::heuristic::TYPE::MANHATTAN:	
-					heuristic_func_ = std::bind( planner::heuristic::Function::manhattan, 
-						                   		     std::placeholders::_1, 
-						                   		     std::placeholders::_2 ); 
-					num_directions_ = 4;
-					break;
+		// 		// Bind manhattan function to the heuristic function and set
+		// 		// the number of directions to 4.
+		// 		case planner::heuristic::TYPE::MANHATTAN:	
+		// 			heuristic_func_ = std::bind( planner::heuristic::Function::manhattan, 
+		// 				                   		     std::placeholders::_1, 
+		// 				                   		     std::placeholders::_2 ); 
+		// 			num_directions_ = 4;
+		// 			break;
 
-				// Bind octagonal function to the heuristic function and set
-				// the number of directions to 8.
-				case planner::heuristic::TYPE::OCTAGONAL:	
-					heuristic_func_ = std::bind( planner::heuristic::Function::octagonal, 
-						                           std::placeholders::_1, 
-						                           std::placeholders::_2 ); 
-					num_directions_ = 8;
-					break;
+		// 		// Bind octagonal function to the heuristic function and set
+		// 		// the number of directions to 8.
+		// 		case planner::heuristic::TYPE::OCTAGONAL:	
+		// 			heuristic_func_ = std::bind( planner::heuristic::Function::octagonal, 
+		// 				                           std::placeholders::_1, 
+		// 				                           std::placeholders::_2 ); 
+		// 			num_directions_ = 8;
+		// 			break;
 
-				// Heuristic not supported. 
-				case planner::heuristic::TYPE::NOT_SUPPORTED:
-				default:
-					std::cout << "[ERROR] Heuristic is not supported " << std::endl;
-					return false;
-			}
-			return true;
-		}
+		// 		// Heuristic not supported. 
+		// 		case planner::heuristic::TYPE::NOT_SUPPORTED:
+		// 		default:
+		// 			std::cout << "[ERROR] Heuristic is not supported " << std::endl;
+		// 			return false;
+		// 	}
+		// 	return true;
+		// }
 
 		bool Function::is_coord_valid( const planner::Coord &coordinate, 
 			                             const planner::MapParameters &map_param ) 
 		{
-			return ( coordinate.r >= 0 && coordinate.r < map_param.width_ && 
-				       coordinate.c >= 0 && coordinate.c < map_param.height_ );
+			return ( coordinate.r >= 0 && coordinate.r < map_param.height_ && 
+				       coordinate.c >= 0 && coordinate.c < map_param.width_ );
 		}
 
 		bool Function::is_coord_destination( const planner::Coord &coordinate, 
@@ -260,7 +259,7 @@ namespace planner
 		bool Function::is_coord_blocked( const planner::Coord &coordinate,
 										                 const std::vector<std::vector<int>> &bin_map ) 
 		{
-			return bin_map[ coordinate.r ][ coordinate.c ] == FREE;
+			return BLOCKED == bin_map[ coordinate.r ][ coordinate.c ];
 		}
 
 		void Function::get_path( std::vector<planner::Coord> &path, 
@@ -268,7 +267,7 @@ namespace planner
 			                       const planner::Coord &destination ) 
 		{
 			path.clear();
-			Coord temp = destination;
+			planner::Coord temp = destination;
 
 			while( !(nodes[ temp.r ][ temp.c ].parent == temp ) ) 
 			{

@@ -183,6 +183,9 @@ namespace planner
 
 	void Map::create_bgr_obstacle_map( const cv::Mat& dilated_map ) 
 	{
+		const cv::Vec3b blue  = cv::Vec3b(255,   0,   0);
+		const cv::Vec3b white = cv::Vec3b(255, 255, 255);
+
 		cv::Mat temp_obstacle_map( input_map_.size(), CV_8UC3 );
 
 		for ( unsigned int r = 0; r < dilated_map.rows; r++ ) 
@@ -192,7 +195,7 @@ namespace planner
 			{
 				uchar color = R[ c ];
 				temp_obstacle_map.at<cv::Vec3b>(
-					cv::Point( c, r ) ) = color == map_params_.max_thresh_ ? VBLUE : VWHITE;
+					cv::Point( c, r ) ) = color == map_params_.max_thresh_ ? blue : white;
 			}
 		}
 		obstacle_map_ = temp_obstacle_map;
@@ -200,12 +203,12 @@ namespace planner
 
 	bool Map::generate_bin_map() 
 	{
-
 		int win_size = map_params_.window_size_;
+		const cv::Scalar black = cv::Scalar( 0, 0, 0 );
 
 		cv::Rect bounds(0, 0, obstacle_map_.cols, obstacle_map_.rows);
 
-		cv::Mat map_crop = cv::Mat( win_size, win_size, CV_8UC3, cv::Scalar( 0, 0, 0 ) );
+		cv::Mat map_crop = cv::Mat( win_size, win_size, CV_8UC3, black );
 
 		for ( unsigned int x = 0; x < obstacle_map_.cols; x += win_size ) 
 		{
@@ -240,6 +243,7 @@ namespace planner
 	void Map::draw_grid() 
 	{
 		unsigned int i = 0;
+		const cv::Scalar black = cv::Scalar( 0, 0, 0 );
 
 		// Draw vertical lines
 		for ( i = 0; i < obstacle_map_.cols; i += map_params_.window_size_ ) 
@@ -247,7 +251,7 @@ namespace planner
 			cv::line( obstacle_map_, 
 				        cv::Point( i, 0 ), 
 				        cv::Point( i, obstacle_map_.rows - 1 ), 
-				        SBLACK, 1 );
+				        black, 1 );
 		}
 
 		// Draw horizontal lines
@@ -256,7 +260,7 @@ namespace planner
 		 	cv::line( obstacle_map_, 
 		 		        cv::Point( 0, i ), 
 		 		        cv::Point( obstacle_map_.cols - 1, i ), 
-		 		        SBLACK, 1 );
+		 		        black, 1 );
 		}
 	}
 
@@ -291,6 +295,7 @@ namespace planner
 	void Map::trace_path( const std::vector<planner::Coord>& path) 
 	{
 		planner::Coord prev = { INT_MAX, INT_MAX };
+		const cv::Scalar red = cv::Scalar( 0, 0, 255);
 
 		for( auto& coord: path )
 		{
@@ -302,7 +307,7 @@ namespace planner
 				cv::circle( input_map_, 
 					          cv::Point( p.c * map_params_.window_size_, 
 					          	         p.r * map_params_.window_size_ ),
-					          2, SRED, 1);
+					          2, red, 1);
 			}
 			std::cout << "->("<< p.r <<","<<p.c <<")";
 			bin_map_[ p.r ][ p.c ] = 7;
