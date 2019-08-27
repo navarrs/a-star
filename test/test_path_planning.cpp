@@ -1,3 +1,10 @@
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/variables_map.hpp>
+#include <boost/program_options/parsers.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/filesystem.hpp>
+
 #include <opencv2/opencv.hpp>
 #include <fstream>
 #include <string>
@@ -22,46 +29,95 @@
 */
 void mouse_callback(int event, int x, int y, int flags, void* param);
 
-int main( int argc, char* argv[] ) {
+int main( int argc, char* argv[] ) 
+{
+	/**
+	 * Parse arguments 
+	 */
+	boost::program_options::options_description description( "Usage" );
+	description.add_options()
+		( "help", "Program usage." )
+		( "map-path",   boost::program_options::value<std::string>()->default_value( 
+				"../maps/map1.png" ), "Path to input map." )
+		( "map-config", boost::program_options::value<std::string>()->default_value(
+				"../maps/map.yml" ), "Path to map configuration." )
+		( "heuristic",  boost::program_options::value<std::string>()->default_value(
+				"euclidean"), "Heuristic function used with the search algorithm." )
+		( "search",    boost::program_options::value<std::string>()->default_value(
+			  "astar"),     "Search algorithm for planning" );
+	boost::program_options::variables_map options;
+	boost::program_options::store( boost::program_options::command_line_parser( 
+		     argc, argv ).options( description ).run(), options );
 
-	std::string map_path { "../maps/map1.png" };
-	std::string map_config_file{ "../maps/map.yml" };
-	bool visualize { false };
-
-	// Parse arguments 
-	int c; 
-	while( ( c = getopt( argc, argv, "m:c:hv" ) ) != -1 ) {
-		switch( c ) {
-			case 'm': if( optarg ) map_path = optarg; break;
-			case 'c': if( optarg ) map_config_file = optarg; break;
-			case 'v': if( argv[ optind] ) visualize = atoi(argv[ optind]); break;
-			case 'h':
-			case '?':
-				std::cout << "[USAGE]"
-				          << "\t -h \tUsage help.\n"
-				          << "\t -p \tFull path to the map to test. Default: "
-				          << map_path << "\n"
-				          << "\t -c \tFull path to map configuration. Default:"
-				          << map_config_file << "\n"
-				          << "\t -v \tVisualize process. Default: " << visualize
-				          << std::endl;
-				exit( EXIT_SUCCESS );
-		} 
+	try
+	{
+		boost::program_options::notify( options );
+	}
+	catch ( std::exception& e )
+	{
+		std::cerr << "[FATAL] Could not parse arguments. Error: " 
+		          << e.what()
+		          << std::endl;
+		return EXIT_FAILURE;
 	}
 
-	//-------------------------- Creating Map
+	std::string map_path {       options[ "map-path"   ].as<std::string>() };
+	std::string map_config_file{ options[ "map-config" ].as<std::string>() };
+	std::string heuristic_str{   options[ "heuristic"  ].as<std::string>() };
+	std::string search_str{      options[ "search"     ].as<std::string>() };
+
+	// Validate input path to map. 
+	if ( map_path.empty() )
+	{
+		std::cerr << "[FATAL] Need to provide a path to the input map" << std::endl;
+		return EXIT_FAILURE;
+	}
+
+	// Validate input path to configuration file. 
+	if ( map_config_file.empty() )
+	{
+		std::cerr << "[FATAL] Need to provide a path to the configuration file"
+		          << std::endl;
+		return EXIT_FAILURE;	
+	}
+
+	// Get heuristic.
+	boost::to_upper( heuristic_str );
+	planner::heuristic::TYPE heuristic{ planner::heuristic::NAME2TYPE.find( 
+																	          heuristic_str )->second };
+	if ( planner::heuristic::TYPE::NOT_SUPPORTED == heuristic )
+	{
+		std::cerr << "[FATAL] Heuristic is not supported" << std::endl;
+		return EXIT_FAILURE;
+	}
+
+	// Get planner.
+	boost::to_upper( search_str );
+	planner::search_algorithm::TYPE search{ planner::search_algorithm::NAME2TYPE.find( 
+																	          search_str )->second };
+	if ( planner::search_algorithm::TYPE::NOT_SUPPORTED == search )
+	{
+		std::cerr << "[FATAL] Search algorithm is not supported" << std::endl;
+		return EXIT_FAILURE;
+	}
+
+	/**
+	 * Creating Map
+	 */ 
 	std::cout <<  "[START] Creating world..." << std::endl;
 	cv::Mat input_map = cv::imread( map_path );
 	planner::Map map( map_config_file, input_map );
 	if ( !map.create_obstacle_map() ) {
-		std::cout << "[ERROR] Could not create map" << std::endl;
+		std::cout << "[FATAL] Could not create map" << std::endl;
 		return EXIT_FAILURE;
 	}
 	std::cout << "[INFO] Displaying maps..." << std::endl;
 	map.display();
 	std::cout << "[DONE]" << std::endl;
 
-	//-------------------------- Creating planner
+	/**
+	 * Creating Planner
+	 */ 
 	std::cout << "[START] Creating planner..." << std::endl;
 	planner::PathFinder path_finder;
 
@@ -79,11 +135,12 @@ int main( int argc, char* argv[] ) {
 	path_finder.print();
 	std::cout << "[DONE]" << std::endl;
 
-	//-------------------------- Planning
-	std::cout << "[INFO] Finding path" << std::endl;
+	/**
+	 * Planning
+	 */ 
+	std::cout << "[START] Planning" << std::endl;
 	std::vector<std::vector<int>> binmap = map.get();
-	if( !path_finder.find_path( binmap, map.get_configuration(),
-												      planner::heuristic::TYPE::EUCLIDEAN ) )  
+	if( !path_finder.find_path( binmap, map.get_configuration(), heuristic ) )  
 	{
 		std::cout << "[ERROR] Planner could not find path" << std::endl;
 		return EXIT_FAILURE;
@@ -93,7 +150,6 @@ int main( int argc, char* argv[] ) {
 	std::cout << "[INFO] Tracing path" << std::endl;
 	map.trace_path( path );
 	map.display();
-
 	std::cout << "[DONE] " << std::endl;
 
 	return EXIT_SUCCESS;

@@ -8,8 +8,8 @@
 #include <stack> 
 #include <iostream>
 
-namespace planner 
-{
+namespace planner  {
+
 	const unsigned int FREE_CELL = 225;
 	const unsigned int FREE      = 0;
 	const unsigned int BLOCKED   = 1;
@@ -126,10 +126,19 @@ namespace planner
 		// Mapping function from enum to string.
 		const std::map<TYPE, std::string> NAME
 		{
-		  {TYPE::EUCLIDEAN,     "Euclidean"     },
-		  {TYPE::MANHATTAN,     "Manhattan"     },
-		  {TYPE::OCTAGONAL,     "Octagonal"     },
-		  {TYPE::NOT_SUPPORTED, "Not supported" },
+		  { TYPE::EUCLIDEAN,     "EUCLIDEAN"     },
+		  { TYPE::MANHATTAN,     "MANHATTAN"     },
+		  { TYPE::OCTAGONAL,     "OCTAGONAL"     },
+		  { TYPE::NOT_SUPPORTED, "NOT_SUPPORTED" },
+		};
+
+		// Mapping function from string to enum.
+		const std::map<std::string, TYPE> NAME2TYPE
+		{
+			{ "EUCLIDEAN",     TYPE::EUCLIDEAN     },
+			{ "MANHATTAN",     TYPE::MANHATTAN     },
+			{ "OCTAGONAL",     TYPE::OCTAGONAL     },
+			{ "NOT_SUPPORTED", TYPE::NOT_SUPPORTED },
 		};
 
 		// Methods for heuristic functions.
@@ -201,8 +210,15 @@ namespace planner
 		// Mapping function from enum to string.
 		const std::map<TYPE, std::string> NAME
 		{
-			{TYPE::ASTAR,         "A star search" },
-			{TYPE::NOT_SUPPORTED, "Not supported" },
+			{ TYPE::ASTAR,         "ASTAR"         },
+			{ TYPE::NOT_SUPPORTED, "NOT_SUPPORTED" },
+		};
+
+		// Mapping function from string to enum.
+		const std::map<std::string, TYPE> NAME2TYPE
+		{
+			{ "ASTAR",         TYPE::ASTAR         },
+			{ "NOT_SUPPORTED", TYPE::NOT_SUPPORTED },
 		};
 
 		// Methods for search algorithms.
@@ -341,6 +357,6 @@ namespace planner
 
 		};
 	} // End of namespace search_algorihthm
-}
+} // End of namespace planner
 
 #endif

@@ -49,22 +49,22 @@ namespace planner
 	{
 
 		// Get map parameters from YAML file 
-		YAML::Node map_config = YAML::LoadFile( map_configuration_file );
+		// YAML::Node map_config = YAML::LoadFile( map_configuration_file );
 
-		try 
-		{
-			map_params_.width_        = map_config[   "map_width"].as<int>();
-			map_params_.height_       = map_config[  "map_height"].as<int>();
-			map_params_.dilation_     = map_config["map_dilation"].as<int>();
-			map_params_.window_size_  = map_config[ "window_size"].as<int>();
-			map_params_.min_thresh_   = map_config[  "min_thresh"].as<int>();
-			map_params_.max_thresh_   = map_config[  "max_thresh"].as<int>();
-		} 
-		catch( std::exception &e ) 
-		{
-			std::cout << "[ERROR] Unable to parse map configuration: " << e.what();
-			exit( EXIT_FAILURE );
-		}
+		// try 
+		// {
+		// 	map_params_.width_        = map_config[   "map_width"].as<int>();
+		// 	map_params_.height_       = map_config[  "map_height"].as<int>();
+		// 	map_params_.dilation_     = map_config["map_dilation"].as<int>();
+		// 	map_params_.window_size_  = map_config[ "window_size"].as<int>();
+		// 	map_params_.min_thresh_   = map_config[  "min_thresh"].as<int>();
+		// 	map_params_.max_thresh_   = map_config[  "max_thresh"].as<int>();
+		// } 
+		// catch( std::exception &e ) 
+		// {
+		// 	std::cout << "[ERROR] Unable to parse map configuration: " << e.what();
+		// 	exit( EXIT_FAILURE );
+		// }
 
 		print_config();
 

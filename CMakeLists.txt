@@ -5,14 +5,15 @@ set ( CMAKE_BUILD_TYPE Release )
 set ( CMAKE_CXX_STANDARD 11 )
 set ( CMAKE_CXX_STANDARD_REQUIRED ON )
 
-find_package( Yaml-cpp REQUIRED )
-
+find_package( yaml-cpp REQUIRED )
 find_package( OpenCV   REQUIRED )
+find_package( Boost COMPONENTS program_options filesystem REQUIRED )
 
 include_directories ( 
 	inc 
 	${YAMLCPP_INCLUDE_DIRS}
 	${OpenCV_INCLUDE_DIRS}
+	${Boost_INCLUDE_DIRS}
 )
 
 set( PATH_PLANNING_HDRS 
@@ -22,7 +23,7 @@ set( PATH_PLANNING_HDRS
 )
 
 set( PATH_PLANNING_SRCS
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/path_finder.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/path_finder.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/map.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/heuristic.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/search.cpp
@@ -36,5 +37,6 @@ target_link_libraries( planner
   ${PROJECT_NAME} 
 	${OpenCV_LIBS}
 	${YAMLCPP_LIBRARIES}
+	${Boost_LIBRARIES}
 )
 
