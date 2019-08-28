@@ -55,9 +55,7 @@ int main( int argc, char* argv[] )
 	}
 	catch ( std::exception& e )
 	{
-		std::cerr << "[FATAL] Could not parse arguments. Error: " 
-		          << e.what()
-		          << std::endl;
+		std::cout << "Error: Could not parse arguments: " << e.what() << '\n';
 		return EXIT_FAILURE;
 	}
 
@@ -69,15 +67,14 @@ int main( int argc, char* argv[] )
 	// Validate input path to map. 
 	if ( map_path.empty() )
 	{
-		std::cerr << "[FATAL] Need to provide a path to the input map" << std::endl;
+		std::cout << "Error: Need to provide a path to the input map\n";
 		return EXIT_FAILURE;
 	}
 
 	// Validate input path to configuration file. 
 	if ( map_config_file.empty() )
 	{
-		std::cerr << "[FATAL] Need to provide a path to the configuration file"
-		          << std::endl;
+		std::cout << "Error: Need to provide a path to the configuration file\n";
 		return EXIT_FAILURE;	
 	}
 
@@ -87,7 +84,7 @@ int main( int argc, char* argv[] )
 																	          heuristic_str )->second };
 	if ( planner::heuristic::TYPE::NOT_SUPPORTED == heuristic )
 	{
-		std::cerr << "[FATAL] Heuristic is not supported" << std::endl;
+		std::cout << "Error: Heuristic is not supported\n";
 		return EXIT_FAILURE;
 	}
 
@@ -97,66 +94,83 @@ int main( int argc, char* argv[] )
 																	          search_str )->second };
 	if ( planner::search_algorithm::TYPE::NOT_SUPPORTED == search )
 	{
-		std::cerr << "[FATAL] Search algorithm is not supported" << std::endl;
+		std::cout << "Error: Search algorithm is not supported\n";
 		return EXIT_FAILURE;
 	}
 
 	/**
 	 * Creating Map
-	 */ 
-	std::cout <<  "[START] Creating world..." << std::endl;
+	 */
+
+	// Create world 
 	cv::Mat input_map = cv::imread( map_path );
+
+	// 	Provide map configuration and input map to instantiate map object. 
 	planner::Map map( map_config_file, input_map );
-	if ( !map.create_obstacle_map() ) {
-		std::cout << "[FATAL] Could not create map" << std::endl;
+	
+	// Create obstacle map 
+	if ( !map.create_obstacle_map() ) 
+	{
+		std::cout << "Error: Could not create map\n";
 		return EXIT_FAILURE;
 	}
-	std::cout << "[INFO] Displaying maps..." << std::endl;
+
+	// Display input map and binary mao. 
 	map.display();
-	std::cout << "[DONE]" << std::endl;
+
 
 	/**
 	 * Creating Planner
 	 */ 
-	std::cout << "[START] Creating planner..." << std::endl;
+	
 	planner::PathFinder path_finder;
-
-	std::cout << "[INFO] Setting Search Algorithm " << std::endl;
-	if ( !path_finder.set_search_algorithm( 
-		                 planner::search_algorithm::TYPE::ASTAR ) ) {
-		std::cout << "[ERROR] Could not set search algorithm" << std::endl;
+	
+	// Set heuristic function. 
+	if ( !path_finder.set_heuristic( heuristic ) )
+	{
+		std::cout << "Error: Could not set heuristic function\n";
 		return EXIT_FAILURE;
 	}
 
-	std::cout << "[INFO] Setting source and destination" << std::endl;
+	// Set search algorithm.
+	if ( !path_finder.set_search_algorithm( 
+		                 planner::search_algorithm::TYPE::ASTAR ) ) {
+		std::cout << "Error: Could not set search algorithm\n";
+		return EXIT_FAILURE;
+	}
+
+	// Set source and destination from obstacle map.
+	cv::Mat obstacle_map = map.get_obstacle_map();
 	path_finder.set_source( { 2, 4 } );
 	path_finder.set_destination( { 24,  32 } );
-	std::cout << "[INFO] Displaying planner configuration " << std::endl;
+	
+	// Display finder configuration.
 	path_finder.print();
-	std::cout << "[DONE]" << std::endl;
+
 
 	/**
 	 * Planning
 	 */ 
-	std::cout << "[START] Planning" << std::endl;
-	std::vector<std::vector<int>> binmap = map.get();
+	
+	// Start planning trajectory.
+	std::vector<std::vector<int>> binmap = map.get_bin_map();
 	if( !path_finder.find_path( binmap, map.get_configuration(), heuristic ) )  
 	{
-		std::cout << "[ERROR] Planner could not find path" << std::endl;
+		std::cout << "Error: Planner could not find path\n";
 		return EXIT_FAILURE;
 	}
 	std::vector<planner::Coord> path = path_finder.get_path();
 
-	std::cout << "[INFO] Tracing path" << std::endl;
+	// Trace path on map if found. Then, display it. 
 	map.trace_path( path );
 	map.display();
-	std::cout << "[DONE] " << std::endl;
 
 	return EXIT_SUCCESS;
 }
 
 // // Mouse callback to set start and destination 
-// void mouse_callback(int event, int x, int y, int flags, void* param) {
+// void mouse_callback(int event, int x, int y, int flags, void* param) 
+// {
 // 	Mat img = *((Mat *) param);
 // 	Rect bounds(0, 0, img.cols, img.rows);
 

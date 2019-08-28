@@ -203,78 +203,46 @@ namespace planner
 		}
 
 		// // TODO: Make this one work.
-		// bool Function::set_heuristic( const heuristic::TYPE& heuristic ) 
-		// {
-		// 	switch( heuristic ) 
-		// 	{
-		// 		// Bind euclidean function to the heuristic function and set
-		// 		// the number of directions to 8.
-		// 		case planner::heuristic::TYPE::EUCLIDEAN:	
-		// 			heuristic_func_ = std::bind( planner::heuristic::Function::euclidean, 
-		// 				                   		 		 std::placeholders::_1, 
-		// 				                   		     std::placeholders::_2 ); 
-		// 			num_directions_ = 8;
-		// 			break;
-
-		// 		// Bind manhattan function to the heuristic function and set
-		// 		// the number of directions to 4.
-		// 		case planner::heuristic::TYPE::MANHATTAN:	
-		// 			heuristic_func_ = std::bind( planner::heuristic::Function::manhattan, 
-		// 				                   		     std::placeholders::_1, 
-		// 				                   		     std::placeholders::_2 ); 
-		// 			num_directions_ = 4;
-		// 			break;
-
-		// 		// Bind octagonal function to the heuristic function and set
-		// 		// the number of directions to 8.
-		// 		case planner::heuristic::TYPE::OCTAGONAL:	
-		// 			heuristic_func_ = std::bind( planner::heuristic::Function::octagonal, 
-		// 				                           std::placeholders::_1, 
-		// 				                           std::placeholders::_2 ); 
-		// 			num_directions_ = 8;
-		// 			break;
-
-		// 		// Heuristic not supported. 
-		// 		case planner::heuristic::TYPE::NOT_SUPPORTED:
-		// 		default:
-		// 			std::cout << "[ERROR] Heuristic is not supported " << std::endl;
-		// 			return false;
-		// 	}
-		// 	return true;
-		// }
-
-		bool Function::is_coord_valid( const planner::Coord &coordinate, 
-			                             const planner::MapParameters &map_param ) 
+		bool Function::set_heuristic( const heuristic::TYPE& heuristic ) 
 		{
-			return ( coordinate.r >= 0 && coordinate.r < map_param.height_ && 
-				       coordinate.c >= 0 && coordinate.c < map_param.width_ );
-		}
-
-		bool Function::is_coord_destination( const planner::Coord &coordinate, 
-											                   const planner::Coord &destination ) 
-		{
-			return coordinate == destination;
-		}
-
-		bool Function::is_coord_blocked( const planner::Coord &coordinate,
-										                 const std::vector<std::vector<int>> &bin_map ) 
-		{
-			return BLOCKED == bin_map[ coordinate.r ][ coordinate.c ];
-		}
-
-		void Function::get_path( std::vector<planner::Coord> &path, 
-														 const std::vector<std::vector<planner::Node>> &nodes, 
-			                       const planner::Coord &destination ) 
-		{
-			path.clear();
-			planner::Coord temp = destination;
-
-			while( !(nodes[ temp.r ][ temp.c ].parent == temp ) ) 
+			switch( heuristic ) 
 			{
-				path.push_back( temp );
-				temp = nodes[ temp.r ][ temp.c ].parent;
+				// Bind euclidean function to the heuristic function and set
+				// the number of directions to 8.
+				case planner::heuristic::TYPE::EUCLIDEAN:	
+					heuristic_func_ = std::bind( planner::heuristic::Function::euclidean, 
+						                   		 		 std::placeholders::_1, 
+						                   		     std::placeholders::_2 ); 
+					num_directions_ = 8;
+					break;
+
+				// Bind manhattan function to the heuristic function and set
+				// the number of directions to 4.
+				case planner::heuristic::TYPE::MANHATTAN:	
+					heuristic_func_ = std::bind( planner::heuristic::Function::manhattan, 
+						                   		     std::placeholders::_1, 
+						                   		     std::placeholders::_2 ); 
+					num_directions_ = 4;
+					break;
+
+				// Bind octagonal function to the heuristic function and set
+				// the number of directions to 8.
+				case planner::heuristic::TYPE::OCTAGONAL:	
+					heuristic_func_ = std::bind( planner::heuristic::Function::octagonal, 
+						                           std::placeholders::_1, 
+						                           std::placeholders::_2 ); 
+					num_directions_ = 8;
+					break;
+
+				// Heuristic not supported. 
+				case planner::heuristic::TYPE::NOT_SUPPORTED:
+				default:
+					std::cout << "[ERROR] Heuristic is not supported " << std::endl;
+					return false;
 			}
-			path.push_back( temp );
+			return true;
 		}
+
+		
 	} // End of namespace search algorithm
 } // End of namespace planner 

@@ -10,14 +10,13 @@
  * -------------------------------------------------------------------------- */
 
 #include <opencv2/opencv.hpp>
-#include "yaml-cpp/yaml.h"
+#include <yaml-cpp/yaml.h>
 
 #include "planner.h"
 #include "map.h"
 
 namespace planner 
-{
-	// Default constructor
+{	
 	Map::Map() 
 	{
 		map_params_.width_        = 640;
@@ -47,24 +46,23 @@ namespace planner
 	// Constructor with parameters
 	Map::Map( const std::string &map_configuration_file, cv::Mat& map ) 
 	{
-
 		// Get map parameters from YAML file 
-		// YAML::Node map_config = YAML::LoadFile( map_configuration_file );
+		YAML::Node map_config = YAML::LoadFile( map_configuration_file );
 
-		// try 
-		// {
-		// 	map_params_.width_        = map_config[   "map_width"].as<int>();
-		// 	map_params_.height_       = map_config[  "map_height"].as<int>();
-		// 	map_params_.dilation_     = map_config["map_dilation"].as<int>();
-		// 	map_params_.window_size_  = map_config[ "window_size"].as<int>();
-		// 	map_params_.min_thresh_   = map_config[  "min_thresh"].as<int>();
-		// 	map_params_.max_thresh_   = map_config[  "max_thresh"].as<int>();
-		// } 
-		// catch( std::exception &e ) 
-		// {
-		// 	std::cout << "[ERROR] Unable to parse map configuration: " << e.what();
-		// 	exit( EXIT_FAILURE );
-		// }
+		try 
+		{
+			map_params_.width_        = map_config[   "map_width"].as<int>();
+			map_params_.height_       = map_config[  "map_height"].as<int>();
+			map_params_.dilation_     = map_config["map_dilation"].as<int>();
+			map_params_.window_size_  = map_config[ "window_size"].as<int>();
+			map_params_.min_thresh_   = map_config[  "min_thresh"].as<int>();
+			map_params_.max_thresh_   = map_config[  "max_thresh"].as<int>();
+		} 
+		catch( std::exception &e ) 
+		{
+			std::cout << "[ERROR] Unable to parse map configuration: " << e.what();
+			exit( EXIT_FAILURE );
+		}
 
 		print_config();
 
@@ -72,7 +70,7 @@ namespace planner
 		if ( map_params_.width_       < 0 || map_params_.height_   < 0 || 
 			   map_params_.window_size_ < 0 || map_params_.dilation_ < 0  )  
 		{
-			std::cout << "[ERROR] Invalid input parameters " << std::endl;
+			std::cout << "[ERROR] Invalid input parameters\n";
 			exit( EXIT_FAILURE );
 		}
 
@@ -87,7 +85,7 @@ namespace planner
 		// Verify map has data. 
 		if( !map.data ) 
 		{
-			std::cout << "[ERROR] No image data";
+			std::cout << "[ERROR] No image data\n";
 			exit( EXIT_FAILURE );
 		}
 	
@@ -98,18 +96,12 @@ namespace planner
 		obstacle_map_ = cv::Mat::zeros( input_map_.size(), CV_8UC3 );
 	}
 
-	void Map::print_config() 
-	{
-		map_params_.print();
-	}
-
 	bool Map::set( const std::string& map_path ) 
 	{
-
 		// Check if input path is empty.
 		if ( map_path.empty() )
 		{
-			std::cout << "[ERROR] Need to provide a path" << std::endl;
+			std::cout << "[ERROR] Need to provide a path\n";
 			return false;
 		}
 
@@ -117,20 +109,24 @@ namespace planner
 
 		// Check that input map has data. 
 		if ( !input_map_.data ) {
-			std::cout << "[ERROR] No image data. " << std::endl;
+			std::cout << "[ERROR] No image data\n";
 			return false;
 		}
 
 		// Resize input map to size specified parameters.
 		cv::resize( input_map_, input_map_, 
-			          cv::Size( map_params_.width_, map_params_.height_ ) );
-		
+			          cv::Size( map_params_.width_, map_params_.height_ ) );	
 		return true;
 	}
 
-	std::vector<std::vector<int>> Map::get() 
+	std::vector<std::vector<int>> Map::get_bin_map() 
 	{
 		return bin_map_;
+	}
+
+	cv::Mat Map::get_obstacle_map()
+	{
+		return obstacle_map_;
 	}
 
 	planner::MapParameters Map::get_configuration() 
@@ -138,13 +134,17 @@ namespace planner
 		return map_params_;
 	}
 
+	void Map::print_config() 
+	{
+		map_params_.print();
+	}
+
 	bool Map::create_obstacle_map() 
 	{
-
 		// Check that input map has data. 
 		if ( !input_map_.data ) 
 		{
-			std::cout << "[ERROR] Empty input map" << std::endl;
+			std::cout << "[ERROR] Empty input map\n";
 			return false;
 		}
 
@@ -313,6 +313,6 @@ namespace planner
 			bin_map_[ p.r ][ p.c ] = 7;
 			prev = p;
 		}
-		std::cout << std::endl;
+		std::cout << '\n';
 	}
 } // End of namespace planner

@@ -65,14 +65,24 @@ namespace planner
 			bool  set( const std::string& input_path );
 
 			/* -------------------------------------------------------------------- *
-			 * @name:   get
+			 * @name:   get_bin_map
 			 * @brief:  Gets a binary representation of the occupancy grid. 
 			 *
 			 * @param:
 			 *
 			 * @return: Binary occupancy grid.
 			 * ------------------------------------------------------------------- */
-			std::vector<std::vector<int>> get();
+			std::vector<std::vector<int>> get_bin_map();
+
+			/* -------------------------------------------------------------------- *
+			 * @name:   get_obstacle_map
+			 * @brief:  Gets a obstacle map. 
+			 *
+			 * @param:
+			 *
+			 * @return: cv::Mat that represents the obstacle map.
+			 * ------------------------------------------------------------------- */
+			cv::Mat get_obstacle_map();
 
 			/* -------------------------------------------------------------------- *
 			 * @name:   get_configuration

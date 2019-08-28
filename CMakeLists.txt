@@ -26,7 +26,6 @@ set( PATH_PLANNING_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/src/path_finder.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/map.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/heuristic.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/search.cpp
 )
 
 add_library( ${PROJECT_NAME} SHARED ${PATH_PLANNING_SRCS} ${PATH_PLANNING_HDRS} )
