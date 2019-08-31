@@ -59,10 +59,10 @@ int main( int argc, char* argv[] )
 		return EXIT_FAILURE;
 	}
 
-	std::string map_path {       options[ "map-path"   ].as<std::string>() };
-	std::string map_config_file{ options[ "map-config" ].as<std::string>() };
-	std::string heuristic_str{   options[ "heuristic"  ].as<std::string>() };
-	std::string search_str{      options[ "search"     ].as<std::string>() };
+	std::string map_path {            options[ "map-path"   ].as<std::string>() };
+	std::string map_config_file{      options[ "map-config" ].as<std::string>() };
+	std::string heuristic_str{        options[ "heuristic"  ].as<std::string>() };
+	std::string search_algorithm_str{ options[ "search"     ].as<std::string>() };
 
 	// Validate input path to map. 
 	if ( map_path.empty() )
@@ -89,10 +89,10 @@ int main( int argc, char* argv[] )
 	}
 
 	// Get planner.
-	boost::to_upper( search_str );
-	planner::search_algorithm::TYPE search{ planner::search_algorithm::NAME2TYPE.find( 
-																	          search_str )->second };
-	if ( planner::search_algorithm::TYPE::NOT_SUPPORTED == search )
+	boost::to_upper( search_algorithm_str );
+	planner::search_algorithm::TYPE search_algorithm{ 
+		planner::search_algorithm::NAME2TYPE.find( search_algorithm_str )->second };
+	if ( planner::search_algorithm::TYPE::NOT_SUPPORTED == search_algorithm )
 	{
 		std::cout << "Error: Search algorithm is not supported\n";
 		return EXIT_FAILURE;
@@ -133,16 +133,16 @@ int main( int argc, char* argv[] )
 	}
 
 	// Set search algorithm.
-	if ( !path_finder.set_search_algorithm( 
-		                 planner::search_algorithm::TYPE::ASTAR ) ) {
+	if ( !path_finder.set_search_algorithm( search_algorithm ) ) 
+	{
 		std::cout << "Error: Could not set search algorithm\n";
 		return EXIT_FAILURE;
 	}
 
 	// Set source and destination from obstacle map.
 	cv::Mat obstacle_map = map.get_obstacle_map();
-	path_finder.set_source( { 2, 4 } );
-	path_finder.set_destination( { 24,  32 } );
+	path_finder.set_source( { 40, 44 } );
+	path_finder.set_destination( { 4,  20 } );
 	
 	// Display finder configuration.
 	path_finder.print();
@@ -153,8 +153,8 @@ int main( int argc, char* argv[] )
 	 */ 
 	
 	// Start planning trajectory.
-	std::vector<std::vector<int>> binmap = map.get_bin_map();
-	if( !path_finder.find_path( binmap, map.get_configuration(), heuristic ) )  
+	std::vector<std::vector<int>> binmap = map.get_binary_map();
+	if( !path_finder.find_path( binmap, map.get_configuration() ) )  
 	{
 		std::cout << "Error: Planner could not find path\n";
 		return EXIT_FAILURE;
