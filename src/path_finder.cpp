@@ -358,4 +358,3 @@ void PathFinder::get_path( const std::vector<std::vector<planner::Node>> &nodes 
 } 
 
 } // End of namespace planner. 
-
