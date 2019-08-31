@@ -48,7 +48,7 @@ class Map
 		 *
 		 * @return: Deletes an instance of a map. 
 		 * */
-		~Map() { /* Empty implementation */ };
+		~Map() { /* Empty body */ };
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   set
@@ -71,7 +71,7 @@ class Map
 		 *
 		 * @return: Binary occupancy grid.
 		 * */
-		std::vector<std::vector<int>> get_binary_map();
+		std::vector<std::vector<unsigned int>> get_binary_map();
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   get_obstacle_map
@@ -130,14 +130,15 @@ class Map
 		
 	private:
 		/* ---------------------------------------------------------------------- *
-		 * @name:   create_bgr_obstacle_map
-		 * @brief:  Creates a BGR occupancy map with dilated obstacles.
+		 * @name:   roi_average
+		 * @brief:  Computes the (integer) average of an image RoI to determine
+		 *          if a cell is empty or blocked. 
 		 *
-		 * @param:  dilated_map(in): Grayscale obstacle map.
+		 * @param:  roi(in): Region of Interest of map.
 		 *
-		 * @return: 
+		 * @return: Average of the image RoI.
 		 * */
-		void create_bgr_obstacle_map( const cv::Mat& dilated_map );
+		unsigned int roi_average( const cv::Mat& roi);
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   generate_binary_map
@@ -152,6 +153,17 @@ class Map
 		bool generate_binary_map();
 
 		/* ---------------------------------------------------------------------- *
+		 * @name:   create_bgr_obstacle_map
+		 * @brief:  Creates a BGR occupancy map with dilated obstacles.
+		 *
+		 * @param:  dilated_map(in): Grayscale obstacle map.
+		 *
+		 * @return: 
+		 * */
+		void create_bgr_obstacle_map( const cv::Mat& dilated_map );
+
+
+		/* ---------------------------------------------------------------------- *
 		 * @name:   draw_grid
 		 * @brief:  Draws a grid on the BGR obstacle map based on window size 
 		 *          specified in configuration. 
@@ -161,27 +173,6 @@ class Map
 		 * @return: 
 		 * */
 		void draw_grid();
-
-		/* ---------------------------------------------------------------------- *
-		 * @name:   roi_average
-		 * @brief:  Computes the (integer) average of an image RoI to determine
-		 *          if a cell is empty or blocked. 
-		 *
-		 * @param:  roi(in): Region of Interest of map.
-		 *
-		 * @return: Average of the image RoI.
-		 * */
-		int  roi_average( const cv::Mat& roi);
-
-		/* ---------------------------------------------------------------------- *
-		 * @name:   print_config
-		 * @brief:  Prints map class configuration.
-		 *
-		 * @param:  			 
-		 *
-		 * @return: 
-		 * */
-		void print_config();
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   display_binmap()
@@ -204,7 +195,7 @@ class Map
 		cv::Mat obstacle_map_;
 
 		// Binary occupancy map.
-		std::vector<std::vector<int>> binary_map_;
+		std::vector<std::vector<unsigned int>> binary_map_;
 
 		// Configuration parameters of the input map.
 		MapParameters map_params_;

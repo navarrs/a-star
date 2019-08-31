@@ -23,23 +23,23 @@ Map::Map()
 	map_params_.height_       = 480;
 	map_params_.dilation_     = 2;
 	map_params_.window_size_  = 10;
-	map_params_.num_divs_w_   = ( int ) ( map_params_.width_  / map_params_.window_size_ );
-	map_params_.num_divs_h_   = ( int ) ( map_params_.height_ / map_params_.window_size_ );
+	map_params_.num_divs_w_   = ( unsigned int ) ( map_params_.width_  / map_params_.window_size_ );
+	map_params_.num_divs_h_   = ( unsigned int ) ( map_params_.height_ / map_params_.window_size_ );
 	map_params_.min_thresh_   = 200;
 	map_params_.max_thresh_   = 255;
 
-	std::vector<int> w_width( map_params_.num_divs_w_, 0 );
-	std::vector<std::vector<int> > temp_binary_map_( map_params_.num_divs_h_, 
+	std::vector<unsigned int> w_width( map_params_.num_divs_w_, 0 );
+	std::vector<std::vector<unsigned int> > temp_binary_map_( map_params_.num_divs_h_, 
 																								   w_width );
 	binary_map_ = temp_binary_map_;
 
 	input_map_ = cv::Mat::zeros( 
-							cv::Size( map_params_.width_, map_params_.height_ ), CV_8UC3 );
+							 cv::Size( map_params_.width_, map_params_.height_ ), CV_8UC3 );
 
 	obstacle_map_ = cv::Mat::zeros( 
-		          cv::Size( map_params_.width_, map_params_.height_ ), CV_8UC3 );
+		              cv::Size( map_params_.width_, map_params_.height_ ), CV_8UC3 );
 
-	print_config();
+	std::cout << map_params_;
 
 }
 
@@ -64,21 +64,21 @@ Map::Map( const std::string &map_configuration_file, cv::Mat& map )
 		exit( EXIT_FAILURE );
 	}
 
-	print_config();
+	std::cout << map_params_;
 
 	// Assert that the parameters have valid values.
-	if ( map_params_.width_       < 0 || map_params_.height_   < 0 || 
-		   map_params_.window_size_ < 0 || map_params_.dilation_ < 0  )  
+	if ( 0 > map_params_.width_       || 0 > map_params_.height_  || 
+		   0 > map_params_.window_size_ || 0 > map_params_.dilation_   )  
 	{
 		std::cout << "[ERROR] Invalid input parameters\n";
 		exit( EXIT_FAILURE );
 	}
 
-	map_params_.num_divs_w_ = ( int ) ( map_params_.width_  / map_params_.window_size_ );
-	map_params_.num_divs_h_ = ( int ) ( map_params_.height_ / map_params_.window_size_ );
+	map_params_.num_divs_w_ = ( unsigned int ) ( map_params_.width_  / map_params_.window_size_ );
+	map_params_.num_divs_h_ = ( unsigned int ) ( map_params_.height_ / map_params_.window_size_ );
 
-	std::vector<int> w_width(map_params_.num_divs_w_, 0);
-	std::vector<std::vector<int> > temp_binary_map_( map_params_.num_divs_h_, 
+	std::vector<unsigned int> w_width(map_params_.num_divs_w_, 0);
+	std::vector<std::vector<unsigned int> > temp_binary_map_( map_params_.num_divs_h_, 
 		                                               w_width);
 	binary_map_ = temp_binary_map_;
 
@@ -120,7 +120,7 @@ bool Map::set_input_map( const std::string& map_path )
 	return true;
 }
 
-std::vector<std::vector<int>> Map::get_binary_map() 
+std::vector<std::vector<unsigned int>> Map::get_binary_map() 
 {
 	return binary_map_;
 }
@@ -133,11 +133,6 @@ cv::Mat Map::get_obstacle_map()
 planner::MapParameters Map::get_configuration()  
 {
 	return map_params_;
-}
-
-void Map::print_config() 
-{
-	map_params_.print();
 }
 
 bool Map::create_obstacle_map() 
@@ -264,7 +259,7 @@ void Map::draw_grid()
 	}
 }
 
-int Map::roi_average( const cv::Mat& roi ) 
+unsigned int Map::roi_average( const cv::Mat& roi ) 
 {
 	size_t num_elements = roi.rows * roi.cols;
 	size_t sum = 0;
@@ -315,7 +310,7 @@ void Map::trace_path( const std::vector<planner::Coord>& path)
 		}
 
 		// Trace path on binary map.
-		std::cout << "->("<< p.r <<","<<p.c <<")";
+		std::cout << "->" << p ;
 		binary_map_[ p.r ][ p.c ] = 7;
 		prev = p;
 	}

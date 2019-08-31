@@ -1,6 +1,6 @@
-map_width: 640
-map_height: 480
+map_width: 1280
+map_height: 960
 window_size: 10
-map_dilation: 5
+map_dilation: 1
 min_thresh: 225
 max_thresh: 255

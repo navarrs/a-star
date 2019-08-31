@@ -145,7 +145,7 @@ class PathFinder
 		 *            3) No path was found. 
 		 *          Otherwise, true.
 		 * */
-		bool find_path( std::vector<std::vector<int>>& bin_map,
+		bool find_path( std::vector<std::vector<unsigned int>>& bin_map,
 										const planner::MapParameters& map_params );
 
 		/* ---------------------------------------------------------------------- *
@@ -173,8 +173,8 @@ class PathFinder
 		 *						1) Coordinate is not within world's range. 
 		 *					Otherwise, true.
 		 * */
-		 bool is_coord_in_range( const planner::Coord &coordinate, 
-			                       const planner::MapParameters &map_params );
+		 inline bool is_coord_in_range( const planner::Coord &coordinate, 
+			                              const planner::MapParameters &map_params );
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   is_coord_destination
@@ -186,7 +186,7 @@ class PathFinder
 		 *						1) Coordinate is the destination. 
 		 *					Otherwise, false.
 		 * */
-		 bool is_coord_destination( const planner::Coord &coordinate );
+		 inline bool is_coord_destination( const planner::Coord &coordinate );
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   is_coord_blocked
@@ -199,8 +199,8 @@ class PathFinder
 		 *						1) Coordinate is blocked. 
 		 *					Otherwise, false.
 		 * */
-		 bool is_coord_blocked( const planner::Coord &coordinate, 
-			                      const std::vector<std::vector<int>> &bin_map );
+		 inline bool is_coord_blocked( const planner::Coord &coordinate, 
+			                      const std::vector<std::vector<unsigned int>> &bin_map );
 
 
 		 /* --------------------------------------------------------------------- *
@@ -216,7 +216,7 @@ class PathFinder
 		 *            3) No destination was found. 
 		 *					Otherwise, true.
 		 * */
-		 bool astar( std::vector<std::vector<int>> &bin_map, 
+		 bool astar( std::vector<std::vector<unsigned int>> &bin_map, 
 								 const planner::MapParameters  &map_param );
 
 		/* ---------------------------------------------------------------------- *

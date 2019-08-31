@@ -141,8 +141,8 @@ int main( int argc, char* argv[] )
 
 	// Set source and destination from obstacle map.
 	cv::Mat obstacle_map = map.get_obstacle_map();
-	path_finder.set_source( { 40, 44 } );
-	path_finder.set_destination( { 4,  20 } );
+	path_finder.set_source( { 15, 20 } );
+	path_finder.set_destination( { 70,  90 } );
 	
 	// Display finder configuration.
 	path_finder.print();
@@ -153,7 +153,7 @@ int main( int argc, char* argv[] )
 	 */ 
 	
 	// Start planning trajectory.
-	std::vector<std::vector<int>> binmap = map.get_binary_map();
+	std::vector<std::vector<unsigned int>> binmap = map.get_binary_map();
 	if( !path_finder.find_path( binmap, map.get_configuration() ) )  
 	{
 		std::cout << "Error: Planner could not find path\n";

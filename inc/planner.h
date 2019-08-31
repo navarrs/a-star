@@ -42,22 +42,24 @@ struct MapParameters
 	int max_thresh_;
 
 	/* ----------------------------------------------------------------------- *
-	 * @name:   print
+	 * @name:   operator<<
 	 * @brief:  Prints the map configuration.
 	 *
-	 * @param:  
+	 * @param:  out(out): Stream object.
+	 *          coordinate(in): Map parameters to print.
 	 *
 	 * @return: 
 	 * */
-	void print() 
+	friend std::ostream& operator<<( std::ostream &out, const MapParameters& mp )
 	{
-		std::cout << "[INFO] Map Configuration \n"      
-	            << "\tHeight: "      << height_      << "\n"
-	            << "\tWidth: "       << width_       << "\n"
-	            << "\tDilation: "    << dilation_    << "\n"
-	            << "\tWindow size: " << window_size_ << "\n"
-	            << "\tMin thresh: "  << min_thresh_  << "\n"
-	            << "\tMax thresh: "  << max_thresh_  << "\n";
+		out << "[INFO] Map Configuration"      
+	      << "\n\tHeight: "      << mp.height_     
+        << "\n\tWidth: "       << mp.width_      
+        << "\n\tDilation: "    << mp.dilation_   
+        << "\n\tWindow size: " << mp.window_size_
+        << "\n\tMin thresh: "  << mp.min_thresh_ 
+        << "\n\tMax thresh: "  << mp.max_thresh_ ;
+    return out;
 	}
 }; // End of struct MapParameters
 
@@ -68,7 +70,7 @@ struct Coord
 	int r, c;
 
 	/* ----------------------------------------------------------------------- *
-	 * @name:   ==
+	 * @name:   operator==
 	 * @brief:  Overloads operator == to compare struct of type planner::Coord.
 	 *
 	 * @param:  coordinate(in): Coordinate to compare.
@@ -77,7 +79,7 @@ struct Coord
 	 *            1) Coordinates are not equal. 
 	 *          Otherwise, true. 
 	 * */
-	bool operator ==( const Coord &coordinate ) const 
+	bool operator==( const Coord &coordinate ) const 
 	{ 
 		return r == coordinate.r && c == coordinate.c; 
 	}
@@ -90,7 +92,7 @@ struct Coord
 	 *
 	 * @return: Result of adding coordinates. 
 	 * */
-	Coord operator +( const Coord &coordinate ) 
+	Coord operator+( const Coord &coordinate ) 
 	{ 
 		return { r + coordinate.r, c + coordinate.c }; 
 	}
@@ -100,7 +102,7 @@ struct Coord
 	 * @brief:  Overloads operator << to stream struct of type planner::Coord.
 	 *
 	 * @param:  out(out): Stream object.
-	 *          coordinate(in): Coordinate to add.
+	 *          coordinate(in): Coordinate to print.
 	 *
 	 * @return: Coordinate stream. 
 	 * */
@@ -115,7 +117,41 @@ struct Node
 {
 	planner::Coord parent;
 	unsigned int h;
-};
+	unsigned int g;
+
+	/* ----------------------------------------------------------------------- *
+	 * @name:   f
+	 * @brief:  Computes cost: f = h + g
+	 *
+	 * @param: 
+	 *
+	 * @return: Cost 
+	 * */
+	unsigned int f() const
+	{
+		return h + g;
+	}
+
+	/* ----------------------------------------------------------------------- *
+	 * @name:   operator<<
+	 * @brief:  Overloads operator << to stream struct of type planner::Coord.
+	 *
+	 * @param:  out(out): Stream object.
+	 *          coordinate(in): Coordinate to print.
+	 *
+	 * @return: Coordinate stream. 
+	 * */
+	friend std::ostream& operator <<( std::ostream& out, const Node& node ) 
+	{
+		out << "Node:"
+		    << "\n\tParent: " << node.parent 
+		    << "\n\tF: "      << node.f()
+		    << "\n\tH: "			<< node.h
+		    << "\n\tG: "			<< node.g;
+		return out;
+	}
+
+}; // End of struct Node. 
 
 // Heuristic 
 namespace heuristic {
@@ -126,6 +162,7 @@ enum class TYPE
 	EUCLIDEAN = 0,
 	MANHATTAN,
 	OCTAGONAL,
+
 	NOT_SUPPORTED
 };
 
@@ -209,6 +246,7 @@ namespace search_algorithm {
 enum class TYPE 
 {
 	ASTAR = 0,
+	
 	NOT_SUPPORTED
 };
 
