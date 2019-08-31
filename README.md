@@ -1,7 +1,7 @@
-# Path planning 
+# Path finder
 
 This repository contains:
-- A C++ implementation of the A* algorithm for path planning. 
+- A C++ implementation of the A* search algorithm for path planning on occupancy grids. 
 
 ## Prerequisites
 
@@ -9,6 +9,7 @@ This repository contains:
 	- Eigen3
 	- Boost
 	- OpenCV 3.4 
+	- YAML C++
 ```
 
 ## Process (example)
