@@ -139,7 +139,6 @@ planner::Coord PathFinder::get_destination( )
 }
 
 
-
 void PathFinder::print() 
 {
 	std::cout << "[INFO] Planner configuration\n"
