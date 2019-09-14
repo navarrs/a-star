@@ -122,7 +122,13 @@ planner::Coord PathFinder::get_destination() {
 	return destination_;
 }
 
+<<<<<<< HEAD
 void PathFinder::print() {
+=======
+
+void PathFinder::print() 
+{
+>>>>>>> 1bb387045cdcda36e156c70b7d534d3286c80530
 	std::cout << "[INFO] Planner configuration\n"
 	          << "\tSource: "           << source_
 	          << "\tDestination: "      << destination_

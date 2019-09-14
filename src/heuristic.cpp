@@ -7,7 +7,6 @@
  *          planner::heuristic. 
  *
  * -------------------------------------------------------------------------- */
-
 #include "planner.h"
 
 namespace planner {
