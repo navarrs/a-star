@@ -15,8 +15,7 @@
 
 namespace planner {
 
-class PathFinder 
-{
+class PathFinder {
 	public:
 		/* ---------------------------------------------------------------------- *
 		 * @name:   PathFinder
@@ -52,7 +51,7 @@ class PathFinder
 		 *						1) The search algorithm is not supported. 
 		 *					Otherwise, true. 
 		 * */
-		bool set_search_algorithm( const planner::search_algorithm::TYPE &search );
+		bool set_search_algorithm(const planner::search_algorithm::TYPE &search);
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   set_heuristic
@@ -67,7 +66,7 @@ class PathFinder
 		 *						1) Heuristic function is not supported. 
 		 *					Otherwise, true.
 		 * */
-		bool set_heuristic( const planner::heuristic::TYPE& heuristic ); 
+		bool set_heuristic(const planner::heuristic::TYPE& heuristic); 
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   set_source
@@ -80,7 +79,7 @@ class PathFinder
 		 *						1) The coordinate has invalid values.  
 		 *					Otherwise, true. 
 		 * */
-		bool set_source( const planner::Coord &source );
+		bool set_source(const planner::Coord &source);
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   get_source
@@ -105,7 +104,7 @@ class PathFinder
 		 *						1) The coordinate has invalid values.  
 		 *					Otherwise, true. 
 		 * */
-		bool set_destination( const planner::Coord &destination );
+		bool set_destination(const planner::Coord &destination);
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   get_destination
@@ -117,7 +116,7 @@ class PathFinder
 		 * @return: Struct of type planner::Coord that represents the destination 
 		 *          coordinate. 
 		 * */
-		planner::Coord get_destination( );
+		planner::Coord get_destination();
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   print
@@ -145,8 +144,8 @@ class PathFinder
 		 *            3) No path was found. 
 		 *          Otherwise, true.
 		 * */
-		bool find_path( std::vector<std::vector<unsigned int>>& bin_map,
-										const planner::MapParameters& map_params );
+		bool find_path(std::vector<std::vector<unsigned int>>& bin_map,
+									const planner::MapParameters& map_params);
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   get_path
@@ -173,8 +172,8 @@ class PathFinder
 		 *						1) Coordinate is not within world's range. 
 		 *					Otherwise, true.
 		 * */
-		 inline bool is_coord_in_range( const planner::Coord &coordinate, 
-			                              const planner::MapParameters &map_params );
+		 inline bool is_coord_in_range(const planner::Coord &coordinate, 
+			                             const planner::MapParameters &map_params);
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   is_coord_destination
@@ -186,7 +185,7 @@ class PathFinder
 		 *						1) Coordinate is the destination. 
 		 *					Otherwise, false.
 		 * */
-		 inline bool is_coord_destination( const planner::Coord &coordinate );
+		 inline bool is_coord_destination(const planner::Coord &coordinate);
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   is_coord_blocked
@@ -199,8 +198,8 @@ class PathFinder
 		 *						1) Coordinate is blocked. 
 		 *					Otherwise, false.
 		 * */
-		 inline bool is_coord_blocked( const planner::Coord &coordinate, 
-			                      const std::vector<std::vector<unsigned int>> &bin_map );
+		 inline bool is_coord_blocked(const planner::Coord &coordinate, 
+			                      const std::vector<std::vector<unsigned int>> &bin_map);
 
 
 		 /* --------------------------------------------------------------------- *
@@ -216,8 +215,8 @@ class PathFinder
 		 *            3) No destination was found. 
 		 *					Otherwise, true.
 		 * */
-		 bool astar( std::vector<std::vector<unsigned int>> &bin_map, 
-								 const planner::MapParameters  &map_param );
+		 bool astar(std::vector<std::vector<unsigned int>> &bin_map, 
+								const planner::MapParameters  &map_param);
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   get_path
@@ -227,7 +226,7 @@ class PathFinder
 		 *
 		 * @return: 
 		 * */
-		 void get_path( const std::vector<std::vector<planner::Node>> &nodes ); 
+		 void get_path(const std::vector<std::vector<planner::Node>> &nodes); 
 
 
 	 	/* ---------------------------------------------------------------------- *
@@ -242,8 +241,8 @@ class PathFinder
 
 		// Heuristic function.
 		planner::heuristic::TYPE heuristic_;
-		std::function<unsigned int( const planner::Coord&, 
-			                          const planner::Coord& )> heuristic_func_;
+		std::function<unsigned int(const planner::Coord&, 
+			                         const planner::Coord&)> heuristic_func_;
 
 		// Source and destination coordinates. 
 		planner::Coord source_;

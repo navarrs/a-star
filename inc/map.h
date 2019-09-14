@@ -16,8 +16,7 @@
 
 namespace planner {
 	
-class Map 
-{
+class Map {
 	public:
 		/* ---------------------------------------------------------------------- *
 		 * @name:   Map
@@ -38,7 +37,7 @@ class Map
 		 *
 		 * @return: Creates an instance of a map from a given configuration. 
 		 * */
-		Map( const std::string& map_configuration, cv::Mat& map);
+		Map(const std::string& map_configuration, cv::Mat& map);
 		
 		/* ---------------------------------------------------------------------- *
 		 * @name:   ~Map
@@ -61,7 +60,7 @@ class Map
 		 *						2) Image is empty.
 		 *          Otherwise, true.
 		 * */
-		bool set_input_map( const std::string& input_path );
+		bool set_input_map(const std::string& input_path);
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   get_binary_map
@@ -126,7 +125,7 @@ class Map
 		 *
 		 * @return: 
 		 * */
-		void trace_path( const std::vector<planner::Coord>& path );
+		void trace_path(const std::vector<planner::Coord>& path);
 		
 	private:
 		/* ---------------------------------------------------------------------- *
@@ -138,7 +137,7 @@ class Map
 		 *
 		 * @return: Average of the image RoI.
 		 * */
-		unsigned int roi_average( const cv::Mat& roi);
+		unsigned int roi_average(const cv::Mat& roi);
 
 		/* ---------------------------------------------------------------------- *
 		 * @name:   generate_binary_map
@@ -160,7 +159,7 @@ class Map
 		 *
 		 * @return: 
 		 * */
-		void create_bgr_obstacle_map( const cv::Mat& dilated_map );
+		void create_bgr_obstacle_map(const cv::Mat& dilated_map);
 
 
 		/* ---------------------------------------------------------------------- *
