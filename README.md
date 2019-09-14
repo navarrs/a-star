@@ -14,8 +14,6 @@ This repository contains:
 
 ## Process (example)
 
-### 1. Ground Annotator
-
 Compile
 
 ```
